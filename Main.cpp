@@ -43,10 +43,10 @@ int stringfind(std::string source, std::string target) {
 
 void add_onequal(Sensors *obj, Callable *Callableobj) {
   obj->onEqual.push_back(Callableobj);
-
 }
 void add_ongreater(Sensors *obj, Callable *Callableobj) {
   obj->onGreater.push_back(Callableobj);
+  //std::cout<<"greater"<<obj->onGreater.size()<<obj->onGreater.front()->value;//(obj->onGreater[0])->value;
 }
 void add_onlesser(Sensors *obj, Callable *Callableobj) {
   obj->onLesser.push_back(Callableobj);
@@ -61,14 +61,14 @@ void automate_task(std::string Ifstate, std::string Todo) {
        !stringfind(device_list[devicesindex]->deviceName, todo_tokens[0]);
        devicesindex++)
     ;
-    auto funptr = &Device::fakefun;
+  // std::cout<<(todo_tokens[2]=="ON");
+  Callable* CALL=nullptr;
+  //auto funptr = &Device::fakefun;
   if (todo_tokens[2] == "ON")
-    auto funptr = &Device::stateOn;
+      CALL =new Callable(device_list[devicesindex],20,&Device::stateOn);
   else if (todo_tokens[2] == "OFF")
-    auto funptr = &Device::stateOff;
-    
+      CALL =new Callable(device_list[devicesindex],20,&Device::stateOff);
 
-  Callable *CALL =new Callable(device_list[devicesindex],2,funptr);
   // for sensor chosing
   int sensorindex = 0;
   for (sensorindex = 0; sensor_list[sensorindex]->purpose != ifstate_tokens[0];
@@ -80,6 +80,7 @@ void automate_task(std::string Ifstate, std::string Todo) {
       add_ongreater(sensor_list[sensorindex],CALL);
   if (ifstate_tokens[1] == "<") // lesser
     add_onlesser(sensor_list[sensorindex],CALL);
+  CALL=nullptr;
 }
 class mysens {
 public:
@@ -92,8 +93,13 @@ public:
 };
 
 int main() {
-  // sensor_list.push_back(new Sensors("Temperature Sensor", "Temperature"));
-  // device_list.push_back(new Device("Smart fan"));
+   sensor_list.push_back(new Sensors("Temperature Sensor", "Temperature"));
+   device_list.push_back(new Device("Smart fan"));
+   automate_task("Temperature > 20","fan = ON");
+   automate_task("Temperature < 20","fan = OFF");
+  //  std::cout<<
+  sensor_list[0]->onChangeOfValue(30);
+  sensor_list[0]->onChangeOfValue(15);
   // // Callable c(device_list[0],20,&Device::getDevicename);
   // add_onequal(sensor_list[0],
   //             new Callable(device_list[0], 20, &Device::stateOn));

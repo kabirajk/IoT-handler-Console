@@ -11,9 +11,12 @@ public:
     value = val;
     functionPointer = func;
     actiavtationCondition = condition;
+    // std::cout<<value;
+    //(objectRefernce->*functionPointer)();
+    // (obj->*func)();
+    // call();
   }
-  void call() { // std::cout<<"called\n";
-                // std::cout<<objectRefernce->deviceName;
+  void call() {
     (objectRefernce->*functionPointer)();
   }
 };
@@ -43,20 +46,18 @@ public:
   void onBatteryLevelChange(int newLevl) {}
   void onChangeOfValue(int newValue) {
     sensorValue = newValue;
-    // for equal
+    // for equal std::cout<<newValue;
     for (int i = 0; i < onEqual.size(); i++) {
       if (onEqual[i]->value == sensorValue)
         onEqual[i]->call(); // std::cout<<sensorValue;
     }
     for (int i = 0; i < onGreater.size(); i++) {
-      if (onGreater[i]->value > sensorValue)
-        onGreater[i]->call();
-      ;
+      if (sensorValue > onGreater[i]->value )
+        onGreater[i]->call();//  
     }
     for (int i = 0; i < onLesser.size(); i++) {
-      if (onLesser[i]->value < sensorValue)
-        ;
-      onLesser[i]->call();
+      if ( sensorValue < onLesser[i]->value)
+        onLesser[i]->call();
     }
   }
   friend void add_onequal(Sensors *obj, Callable *Callableobj);
@@ -99,5 +100,6 @@ public:
   }
   void fakefun(){}
 };
+
 
 
