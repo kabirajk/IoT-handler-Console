@@ -2,11 +2,10 @@
 #include <vector>
 #include "smartdevices.h"
 
-
-std::vector<Sensors *> sensor_list;
-std::vector<Device *> device_list;
-std::vector<std::string> ifstate_tokens;
-std::vector<std::string> todo_tokens;
+// std::vector<Sensor *> sensor_list;
+// std::vector<Device *> device_list;
+std::vector<ConnectionManager *> device_manager;
+// std::vector<ConnectionManager*>device_m;
 // function to tokenise the string
 void string_tokeniser(std::string s, std::vector<std::string> &string_tokens) {
   string_tokens.clear();
@@ -41,81 +40,65 @@ int stringfind(std::string source, std::string target) {
   return 0;
 }
 
-void add_onequal(Sensors *obj, Callable *Callableobj) {
-  obj->onEqual.push_back(Callableobj);
+void add_onequal(void *obj, Callable *Callableobj) {
+  ((Sensor *)obj)->onEqual.push_back(Callableobj);
 }
-void add_ongreater(Sensors *obj, Callable *Callableobj) {
-  obj->onGreater.push_back(Callableobj);
-  //std::cout<<"greater"<<obj->onGreater.size()<<obj->onGreater.front()->value;//(obj->onGreater[0])->value;
+void add_ongreater(void *obj, Callable *Callableobj) {
+  ((Sensor *)obj)->onGreater.push_back(Callableobj);
+  // std::cout<<"greater"<<obj->onGreater.size()<<obj->onGreater.front()->value;//(obj->onGreater[0])->value;
 }
-void add_onlesser(Sensors *obj, Callable *Callableobj) {
-  obj->onLesser.push_back(Callableobj);
+void add_onlesser(void *obj, Callable *Callableobj) {
+  ((Sensor *)obj)->onLesser.push_back(Callableobj);
 }
 
 void automate_task(std::string Ifstate, std::string Todo) {
-  // tokenise string 1. chosse object ffrom list 2.based on comparision // add 3.add callabe object // for device choosing
+  // tokenise string 1. chosse object ffrom list 2.based on comparision //
+  // add 3.add callabe object // for device choosing
+  std::vector<std::string> ifstate_tokens;
+  std::vector<std::string> todo_tokens;
   string_tokeniser(Todo, todo_tokens);
   string_tokeniser(Ifstate, ifstate_tokens);
   int devicesindex = 0;
   for (devicesindex = 0;
-       !stringfind(device_list[devicesindex]->deviceName, todo_tokens[0]);
+       (device_manager[devicesindex])->gettype() &&
+       !(stringfind((device_manager[devicesindex])->getname(), todo_tokens[0]));
        devicesindex++)
     ;
+  device_manager[devicesindex]->printDeviceName();
   // std::cout<<(todo_tokens[2]=="ON");
-  Callable* CALL=nullptr;
-  //auto funptr = &Device::fakefun;
+  Callable *CALL = nullptr;
+  // auto funptr = &Device::fakefun;
   if (todo_tokens[2] == "ON")
-      CALL =new Callable(device_list[devicesindex],20,&Device::stateOn);
+    CALL = new Callable(device_manager[devicesindex], 20, &Device::stateOn);
   else if (todo_tokens[2] == "OFF")
-      CALL =new Callable(device_list[devicesindex],20,&Device::stateOff);
+    CALL = new Callable(device_manager[devicesindex], 20, &Device::stateOff);
 
   // for sensor chosing
   int sensorindex = 0;
-  for (sensorindex = 0; sensor_list[sensorindex]->purpose != ifstate_tokens[0];
+  for (sensorindex = 0;
+       !(device_manager[sensorindex])->gettype() &&
+       (device_manager[sensorindex])->useCase() != ifstate_tokens[0];
        sensorindex++)
     ;
   if (ifstate_tokens[1] == "=") // equal  //chnage callables
-        add_onequal(sensor_list[sensorindex],CALL);
-    if (ifstate_tokens[1] == ">") // greter
-      add_ongreater(sensor_list[sensorindex],CALL);
+    add_onequal(device_manager[sensorindex], CALL);
+  if (ifstate_tokens[1] == ">") // greter
+    add_ongreater(device_manager[sensorindex], CALL);
   if (ifstate_tokens[1] == "<") // lesser
-    add_onlesser(sensor_list[sensorindex],CALL);
-  CALL=nullptr;
+    add_onlesser(device_manager[sensorindex], CALL);
+  CALL = nullptr;
 }
-class mysens {
-public:
-  void (*funcptr)();
-  void movements(void (*func)()) {
-    std::cout << "hello";
-    funcptr = func;
-    funcptr();
-  }
-};
 
 int main() {
-   sensor_list.push_back(new Sensors("Temperature Sensor", "Temperature"));
-   device_list.push_back(new Device("Smart fan"));
-   automate_task("Temperature > 20","fan = ON");
-   automate_task("Temperature < 20","fan = OFF");
-  //  std::cout<<
-  sensor_list[0]->onChangeOfValue(30);
-  sensor_list[0]->onChangeOfValue(15);
-  // // Callable c(device_list[0],20,&Device::getDevicename);
-  // add_onequal(sensor_list[0],
-  //             new Callable(device_list[0], 20, &Device::stateOn));
-  // add_onequal(sensor_list[0],
-  //             new Callable(device_list[0], 30, &Device::stateOff));
-  // sensor_list[0]->onChangeOfValue(20);
-  // sensor_list[0]->onChangeOfValue(21);
-  // sensor_list[0]->onChangeOfValue(22);
-  // sensor_list[0]->onChangeOfValue(30);
+  device_manager.push_back(new Sensor("Temperature Sensor", "Temperature"));
+  std::cout << "\n";
+  device_manager.push_back(new Sensor("Smart fan", "fan"));
+  std::cout << "\n";
 
-  // mysens m;
-  // auto fun=[](){std::cout<<"value is grater than 0";};
-  // auto fun2=mysens::movements;
-  // // (m.*fun2)(fun);
-  // mysens*k=&m;
-  // (k->*fun2)(fun);
+  automate_task("Temperature > 20", "fan = ON");
+  automate_task("Temperature < 20", "fan = OFF");
+  device_manager[0]->onChangeOfValue(30);
+  device_manager[0]->onChangeOfValue(15);
 
   return 0;
 }
