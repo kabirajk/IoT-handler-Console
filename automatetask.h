@@ -81,16 +81,17 @@ void automate_task(std::string Ifstate, std::string Todo) {
 }
 void print_sensor_status() {
   system("cls");
-  std::cout << "Sensor/device name"
+  std::cout <<" "<< "Sensor/device name"
             << "       "
             << "connection status"
             << "       "
             << "value\n"
             << std::endl;
   for (int i = 0; i < device_manager.size(); i++) {
+    std::cout <<i<<".";
     std::cout.width(25);
     std::cout.flags(std::ios::left);
-    std::cout << device_manager[i]->getname();
+    std::cout <<device_manager[i]->getname();
     std::cout.width(25);
     std::cout.flags(std::ios::left);
     std::cout << device_manager[i]->currentState();
@@ -107,4 +108,35 @@ void create_custom_task() {
   std::cout << "Then: ";
   std::cin >> todo;
   automate_task(ifwhen, todo);
+}
+void removesensor()
+{//remove certains dex cecnosr and device
+  for(int i=0;i<device_manager.size();i++)
+  {
+    std::cout<<i<<". "<<device_manager[i]->getname()<<std::endl;
+  }
+  int index=0;
+  std::cout<<"enter the index to delete: ";
+  std::cin>>index;
+  delete device_manager[index];
+  device_manager.erase(device_manager.begin()+index);//iter need to be passed
+  device_manager.shrink_to_fit();
+}
+void addsensor()
+{
+    // add new sensor
+    std::string sensorName,sensorPurpose;
+    std::cout<<"enter the name of sensor: ";
+    std::cin>>sensorName;
+    std::cout<<"enter the purpose of the sensor";
+    std::cin>>sensorPurpose;
+    device_manager.push_back(new Sensor(sensorName,sensorPurpose));
+}
+
+void deallocate()
+{
+  for(int i=0;i<device_manager.size();i++)
+  {
+    delete device_manager[i];
+  }
 }

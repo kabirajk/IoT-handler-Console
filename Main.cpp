@@ -2,11 +2,9 @@
 #include <vector>
 #include <string>
 #include "smartdevices.h"
-// std::vector<Sensor *> sensor_list;
-// std::vector<Device *> device_list;
+
 std::vector<ConnectionManager *> device_manager;
-// std::vector<ConnectionManager*>device_m;
-// function to tokenise the string
+
 #include"automatetask.h"
 
 int main() {
@@ -23,17 +21,9 @@ int main() {
   automate_task("Temperature > 20", "fan = ON");
   device_manager[0]->onChangeOfValue(30);
   print_sensor_status();
-//  while (1)
-//  {
-//    /* code */
-//  }
- 
-  // device_manager[0]->onChangeOfValue(30);
-  // std::cout << "\n";
-  // device_manager[0]->onChangeOfValue(15);
-  // std::cout << "\n";
 
   return 0;
+  
 }
 // implement string tokenisation!
 // complete auto mate function!
