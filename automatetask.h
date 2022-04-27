@@ -48,35 +48,30 @@ void automate_task(std::string Ifstate, std::string Todo) {
   std::vector<std::string> todo_tokens;
   string_tokeniser(Todo, todo_tokens);
   string_tokeniser(Ifstate, ifstate_tokens);
-  int devicesindex = 0;
-  for (devicesindex = 0;
-       (device_manager[devicesindex])->gettype() &&
-       !(stringfind((device_manager[devicesindex])->getname(), todo_tokens[0]));
-       devicesindex++)
-    ; // device_manager[devicesindex]->printDeviceName();
-
   Callable *CALL = nullptr;
-
-  if (todo_tokens[2] == "ON")
-    CALL = new Callable(device_manager[devicesindex],
-                        std::stof(ifstate_tokens[2]), &Device::stateOn);
-  else if (todo_tokens[2] == "OFF")
-    CALL = new Callable(device_manager[devicesindex],
-                        std::stof(ifstate_tokens[2]), &Device::stateOff);
-
+  int devicesindex = 0;
+  for (devicesindex = 0;device_manager.size();devicesindex++)
+       if(device_manager[devicesindex]->getType() &&(stringfind((device_manager[devicesindex])->getName(), todo_tokens[0])))
+           {if (todo_tokens[2] == "ON")
+                  CALL = new Callable(device_manager[devicesindex],
+                                      std::stof(ifstate_tokens[2]), &Device::stateOn);
+          else if (todo_tokens[2] == "OFF")
+                CALL = new Callable(device_manager[devicesindex],
+                                    std::stof(ifstate_tokens[2]), &Device::stateOff);
+            break;}
+              
+   device_manager[devicesindex]->printDeviceName();
   // for sensor chosing
   int sensorindex = 0;
-  for (sensorindex = 0;
-       !(device_manager[sensorindex])->gettype() &&
-       (device_manager[sensorindex])->useCase() != ifstate_tokens[0];
-       sensorindex++)
-    ;
-  if (ifstate_tokens[1] == "=") // equal  //chnage callables
-    add_onequal(device_manager[sensorindex], CALL);
-  if (ifstate_tokens[1] == ">") // greter
-    add_ongreater(device_manager[sensorindex], CALL);
-  if (ifstate_tokens[1] == "<") // lesser
-    add_onlesser(device_manager[sensorindex], CALL);
+  for (sensorindex = 0;device_manager.size();sensorindex++)
+    if(!(device_manager[sensorindex])->getType() &&(device_manager[sensorindex])->useCase() == ifstate_tokens[0])
+      {  if (ifstate_tokens[1] == "=") // equal  //chnage callables
+          add_onequal(device_manager[sensorindex], CALL);
+        if (ifstate_tokens[1] == ">") // greter
+          add_ongreater(device_manager[sensorindex], CALL);
+        if (ifstate_tokens[1] == "<") // lesser
+          add_onlesser(device_manager[sensorindex], CALL);
+          break;}
   CALL = nullptr;
 }
 void print_sensor_status() {
@@ -91,7 +86,7 @@ void print_sensor_status() {
     std::cout <<i<<".";
     std::cout.width(25);
     std::cout.flags(std::ios::left);
-    std::cout <<device_manager[i]->getname();
+    std::cout <<device_manager[i]->getName();
     std::cout.width(25);
     std::cout.flags(std::ios::left);
     std::cout << device_manager[i]->currentState();
@@ -113,7 +108,7 @@ void removesensor()
 {//remove certains dex cecnosr and device
   for(int i=0;i<device_manager.size();i++)
   {
-    std::cout<<i<<". "<<device_manager[i]->getname()<<std::endl;
+    std::cout<<i<<". "<<device_manager[i]->getName()<<std::endl;
   }
   int index=0;
   std::cout<<"enter the index to delete: ";
@@ -140,3 +135,31 @@ void deallocate()
     delete device_manager[i];
   }
 }
+
+
+void stimulate()
+{   while(1)
+    {
+      if((GetKeyState('t'-32) & 0x800)&&(GetKeyState('i'-32) & 0x800))
+        {device_manager[0]->onChangeOfValue((device_manager[0]->currentValue())+1);GetKeyState('t'-32)||GetKeyState('i'-32);system("cls");break;}
+      if((GetKeyState('t'-32) & 0x800) && (GetKeyState('d'-32) & 0x800))
+        {device_manager[0]->onChangeOfValue((device_manager[0]->currentValue())-1);system("cls");break;}
+      if(GetKeyState('l'-32)& 0x800)
+        {device_manager[5]->onChangeOfValue(!device_manager[5]->currentValue());break;}
+      if(GetKeyState('d'-32)& 0x800)
+        {device_manager[6]->onChangeOfValue(!device_manager[6]->currentValue());break;}
+      if(GetKeyState('f'-32)& 0x800)
+        {device_manager[1]->onChangeOfValue(!device_manager[1]->currentValue());break;}
+      if(GetKeyState('m'-32)& 0x800)
+        {device_manager[2]->onChangeOfValue(!device_manager[2]->currentValue());break;}
+      if((GetKeyState('w'-32) & 0x800)&&(GetKeyState('i'-32) & 0x800))
+        {device_manager[3]->onChangeOfValue((device_manager[3]->currentValue())+1);GetKeyState('t'-32)||GetKeyState('i'-32);system("cls");break;}
+      if((GetKeyState('w'-32) & 0x800) && (GetKeyState('d'-32) & 0x800))
+        {device_manager[3]->onChangeOfValue((device_manager[3]->currentValue())-1);system("cls");break;}
+      if((GetKeyState('g'-32) & 0x800)&&(GetKeyState('i'-32) & 0x800))
+        {device_manager[4]->onChangeOfValue((device_manager[4]->currentValue())+1);GetKeyState('t'-32)||GetKeyState('i'-32);system("cls");break;}
+      if((GetKeyState('g'-32) & 0x800) && (GetKeyState('d'-32) & 0x800))
+        {device_manager[4]->onChangeOfValue((device_manager[4]->currentValue())-1);system("cls");break;}
+          if(GetKeyState(0x1B)& 0x800){ break;}
+    }
+} 

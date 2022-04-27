@@ -4,9 +4,9 @@ class ConnectionManager {
 
 public:
   virtual void printDeviceName() = 0;
-  virtual std::string getname() = 0;
+  virtual std::string getName() = 0;
   virtual void onConnect(void) = 0;
-  virtual int gettype() = 0;
+  virtual int getType() = 0;
   virtual float currentValue() = 0;
   virtual void onDisconnect(void) = 0;
   virtual void onChangeOfValue(float newValue) = 0;
@@ -52,27 +52,29 @@ public:
   Sensor(std::string name, std::string use) {
     deviceName = name;
     purpose = use;
+    onConnect();
     // std::cout << deviceName << purpose;
   }
   void stateOff() {
     deviceState = 0;
-    std::cout << customOffMessage << deviceName;
+   // std::cout << customOffMessage << deviceName;
   }
   void stateOn() {
     deviceState = 1;
-    std::cout << customOnMessage << deviceName;
+   // std::cout << customOnMessage << deviceName;
   }
 
   void printDeviceName() { std::cout << deviceName; }
  
-  std::string getname() { return deviceName; }
+  std::string getName() { return deviceName; }
  
+
   void onConnect(void) {
     deviceState = 1;
-    std::cout << "Connected" << deviceName << std::endl;
+//    std::cout << "Connected" << deviceName << std::endl;
   }
  
-  int gettype() { return devicetype; }
+  int getType() { return devicetype; }
 
   float currentValue() { return deviceValue; }
 
@@ -130,23 +132,27 @@ public:
  
   void printDeviceName() { std::cout << deviceName; }
  
-  std::string getname() { return deviceName; }
+  std::string getName() { return deviceName; }
  
   void onConnect(void) {
     deviceState = 1;
-    std::cout << "Connected" << deviceName << std::endl;
+  //  std::cout << "Connected" << deviceName << std::endl;
   }
  
-  int gettype() { return devicetype; }
+  int getType() { return devicetype; }
  
   void onDisconnect(void) {
     deviceState = 0;
-    std::cout << "Disconnected" << deviceName << std::endl;
+    //std::cout << "Disconnected" << deviceName << std::endl;
   }
 
   float currentValue() { return deviceValue; }
 
-  void onChangeOfValue(float newValue) { std::cout << "warning"; }
+  void onChangeOfValue(float newValue) 
+  {
+      deviceValue = newValue;
+      if (deviceState==0) stateOn(); 
+    else stateOff();}
 
   std::string currentState() { return deviceState == 0 ? "Offline" : "Online"; }
 
@@ -156,12 +162,12 @@ public:
 
   void stateOff() {
     deviceState = 0;
-    std::cout << customOffMessage << deviceName;
+    //std::cout << customOffMessage << deviceName;
   }
  
   void stateOn() {
     deviceState = 1;
-    std::cout << customOnMessage << deviceName;
+    //std::cout << customOnMessage << deviceName;
   }
 
   void setCustomMessege(std::string onMessage, std::string offMessage) {
