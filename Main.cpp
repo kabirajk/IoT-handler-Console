@@ -51,7 +51,7 @@ int main() {
       Sleep(1000);
       print_sensor_status();
       if (stimulate())
-          break;
+      {break; change_battery();}
   }
   if(i=="exit") break;
 

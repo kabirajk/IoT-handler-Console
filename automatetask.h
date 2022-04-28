@@ -152,6 +152,13 @@ void deallocate()
   }
 }
 
+void change_battery()
+{
+  for(int i=0;i<device_manager.size();i++)
+  {
+    device_manager[i]->onBatteryLevelChange(1);
+  }
+}
 
 int stimulate()
 {   while(1)
@@ -177,6 +184,7 @@ int stimulate()
       if((GetKeyState('g'-32) & 0x800) && (GetKeyState('d'-32) & 0x800))
         {device_manager[4]->onChangeOfValue((device_manager[4]->currentValue())-1);system("cls");break;}
       if(GetKeyState(0x1B)& 0x800){ return 1;}
+
     }
     return 0;
 } 

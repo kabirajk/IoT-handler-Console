@@ -88,7 +88,8 @@ public:
 
    std::string connectionStatus(){return (int)deviceConnection==0?"Offline":"online";}//connecion
 
-  void onBatteryLevelChange(int newLevl) { /*battery */
+  void onBatteryLevelChange(int newLevl) { deviceBattery-=newLevl;
+  if (deviceBattery<=0) {deviceBattery=0;onDisconnect();stateOff();}
   }
 
   std::string useCase() { return purpose; }
@@ -160,7 +161,10 @@ public:
     else stateOff();}
 
   std::string currentState() { return (deviceState == 0) ? "OFF" : "ON"; }
-  void onBatteryLevelChange(int newLevl) { /*battery */  }
+  void onBatteryLevelChange(int newLevl) 
+  {deviceBattery-=newLevl;
+    if (deviceBattery<=0) 
+    {deviceBattery=0;onDisconnect();stateOff();} }
   
      std::string connectionStatus(){return (int)deviceConnection==0?"Offline":"online";}
   
