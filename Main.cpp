@@ -3,7 +3,6 @@
 #include<conio.h>
 #include <windows.h>
 #include <string>
-#include<future>
 #include "smartdevices.h"
 
 std::vector<ConnectionManager *> device_manager;
@@ -11,17 +10,6 @@ int val=0;
 #include"automatetask.h"
 
 int main() {
-  // unsigned char key[256]={};
-  // unsigned char m_key[256]={}; 
-  // Sleep(1000);
-  // GetKeyboardState(key);
-  // GetKeyboardState(m_key);
-  // for(unsigned int i=0;i<256;i++)
-  //   std::cout<< (key[i] & 0x88)<<"\n";
-  // for(unsigned int i=0;i<256;i++)
-  //   std::cout<< (m_key[i] & 0x88)<<"\n";
-  // return 0;
-
   device_manager.push_back(new Sensor("Temperature Sensor", "Temperature"));
   std::cout << "\n";
   device_manager.push_back(new Device("Smart Fan", "Fan"));
@@ -35,11 +23,39 @@ int main() {
   device_manager.push_back(new Device("Door Control", "Door"));
   device_manager.back()->setCustomMessege("open Door","Close door");
   automate_task("Temperature > 20", "Fan = OFF");
+  //  Sleep(500);
+  // print_sensor_status();
+  // stimulate();
+ std::string i;
  while (1)
- {
-   Sleep(500);
-  print_sensor_status();
-  stimulate();
+ { std::cout<<"options:add_sensor,add_device,print,IFTTT,simulate: ";
+   std::cin>>i;
+  if(i=="add_sensor") 
+  addsensor();
+  if(i=="add_devive")
+  adddevice();
+  if(i=="print")
+    print_sensor_status();
+  if(i=="IFTTT")
+     { std::string ifstring,thenstring;
+      std::cout<<"IF: ";
+       std::cin>>ifstring;
+       std::cout<<"THEN: ";
+       std::cin>>thenstring;
+     automate_task(ifstring,thenstring);}
+  if(i=="remove")
+      remove();
+  if(i=="simulate")// Sleep(500);
+  while(1)
+  {
+      Sleep(1000);
+      print_sensor_status();
+      if (stimulate())
+          break;
+  }
+  if(i=="exit") break;
+
+
  }
   return 0;
 

@@ -10,9 +10,8 @@ public:
   virtual float currentValue() = 0;
   virtual void onDisconnect(void) = 0;
   virtual void onChangeOfValue(float newValue) = 0;
-
   virtual std::string currentState() = 0;
-
+ virtual std::string connectionStatus()=0;
   virtual void onBatteryLevelChange(int newLevl) = 0;
   virtual std::string useCase() = 0;
   virtual void setCustomMessege(std::string onMessage,
@@ -41,6 +40,7 @@ class Sensor : public ConnectionManager {
   std::string deviceName, purpose;
   int devicetype = 0; // 0=sensor
   int deviceState = 0;
+  int deviceConnection=0;
   float deviceValue = 0;
   int deviceBattery = 100;
   std::vector<Callable *> onEqual;
@@ -53,6 +53,7 @@ public:
     deviceName = name;
     purpose = use;
     onConnect();
+    stateOn();
     // std::cout << deviceName << purpose;
   }
   void stateOff() {
@@ -70,7 +71,7 @@ public:
  
 
   void onConnect(void) {
-    deviceState = 1;
+    deviceConnection = 1;
 //    std::cout << "Connected" << deviceName << std::endl;
   }
  
@@ -79,11 +80,13 @@ public:
   float currentValue() { return deviceValue; }
 
   void onDisconnect(void) {
-    deviceState = 0;
+    deviceConnection = 0;
     std::cout << "Disconnected" << deviceName << std::endl;
   }
 
-  std::string currentState() { return deviceState == 0 ? "Offline" : "Online"; }
+  std::string currentState() { return deviceState == 0 ? "OFF" : "ON"; }//power
+
+   std::string connectionStatus(){return (int)deviceConnection==0?"Offline":"online";}//connecion
 
   void onBatteryLevelChange(int newLevl) { /*battery */
   }
@@ -119,6 +122,7 @@ class Device : public ConnectionManager {
   std::string deviceName, category;
   int deviceState = 0;
   int devicetype = 1;
+  int deviceConnection=0;
   float deviceValue = 0;
   int deviceBattery = 100;
   std::string customOnMessage = "Started", customOffMessage = "Stopped";
@@ -128,6 +132,7 @@ public:
     deviceName = Name;
     category = Category;
     onConnect();
+    stateOff();
   }
  
   void printDeviceName() { std::cout << deviceName; }
@@ -135,14 +140,14 @@ public:
   std::string getName() { return deviceName; }
  
   void onConnect(void) {
-    deviceState = 1;
+    deviceConnection = 1;
   //  std::cout << "Connected" << deviceName << std::endl;
   }
  
   int getType() { return devicetype; }
  
   void onDisconnect(void) {
-    deviceState = 0;
+    deviceConnection = 0;
     //std::cout << "Disconnected" << deviceName << std::endl;
   }
 
@@ -154,10 +159,11 @@ public:
       if (deviceState==0) stateOn(); 
     else stateOff();}
 
-  std::string currentState() { return deviceState == 0 ? "Offline" : "Online"; }
-
+  std::string currentState() { return (deviceState == 0) ? "OFF" : "ON"; }
   void onBatteryLevelChange(int newLevl) { /*battery */  }
-
+  
+     std::string connectionStatus(){return (int)deviceConnection==0?"Offline":"online";}
+  
   std::string useCase() { return category; }
 
   void stateOff() {

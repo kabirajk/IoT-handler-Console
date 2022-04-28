@@ -78,21 +78,26 @@ void print_sensor_status() {
   system("cls");
   std::cout <<" "<< "Sensor/device name"
             << "       "
-            << "connection status"
+            << "status  "
+            << "   "
+            << "value"
             << "       "
-            << "value\n"
+            <<"Power"
             << std::endl;
   for (int i = 0; i < device_manager.size(); i++) {
     std::cout <<i<<".";
     std::cout.width(25);
     std::cout.flags(std::ios::left);
     std::cout <<device_manager[i]->getName();
-    std::cout.width(25);
+    std::cout.width(12);
     std::cout.flags(std::ios::left);
-    std::cout << device_manager[i]->currentState();
+    std::cout << device_manager[i]-> connectionStatus();
     std::cout.width(20);
     std::cout.flags(std::ios::left);
-    std::cout << device_manager[i]->currentValue() << std::endl;
+    std::cout << device_manager[i]->currentValue();
+    std::cout.width(20);
+    std::cout.flags(std::ios::left);
+    std::cout << device_manager[i]->currentState()<< std::endl;
   }
 }
 
@@ -104,7 +109,7 @@ void create_custom_task() {
   std::cin >> todo;
   automate_task(ifwhen, todo);
 }
-void removesensor()
+void remove()
 {//remove certains dex cecnosr and device
   for(int i=0;i<device_manager.size();i++)
   {
@@ -128,6 +133,17 @@ void addsensor()
     device_manager.push_back(new Sensor(sensorName,sensorPurpose));
 }
 
+void adddevice()
+{
+    // add new sensor
+    std::string deviceName,devicePurpose;
+    std::cout<<"enter the name of sensor: ";
+    std::cin>>deviceName;
+    std::cout<<"enter the purpose of the sensor";
+    std::cin>>devicePurpose;
+    device_manager.push_back(new Device(deviceName,devicePurpose));
+}
+
 void deallocate()
 {
   for(int i=0;i<device_manager.size();i++)
@@ -137,7 +153,7 @@ void deallocate()
 }
 
 
-void stimulate()
+int stimulate()
 {   while(1)
     {
       if((GetKeyState('t'-32) & 0x800)&&(GetKeyState('i'-32) & 0x800))
@@ -160,6 +176,7 @@ void stimulate()
         {device_manager[4]->onChangeOfValue((device_manager[4]->currentValue())+1);GetKeyState('t'-32)||GetKeyState('i'-32);system("cls");break;}
       if((GetKeyState('g'-32) & 0x800) && (GetKeyState('d'-32) & 0x800))
         {device_manager[4]->onChangeOfValue((device_manager[4]->currentValue())-1);system("cls");break;}
-          if(GetKeyState(0x1B)& 0x800){ break;}
+      if(GetKeyState(0x1B)& 0x800){ return 1;}
     }
+    return 0;
 } 
