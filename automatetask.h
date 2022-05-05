@@ -42,7 +42,7 @@ void add_onlesser(void *obj, Callable *Callableobj) {
 }
 
 void automate_task(std::string Ifstate, std::string Todo) {
-    std::cout << Ifstate << "|" << Todo << std::endl;
+  std::cout << Ifstate << "|" << Todo << std::endl;
   // tokenise string 1. chosse object ffrom list 2.based on comparision //
   // add 3.add callabe object // for device choosing
   std::vector<std::string> ifstate_tokens;
@@ -51,7 +51,7 @@ void automate_task(std::string Ifstate, std::string Todo) {
   string_tokeniser(Ifstate, ifstate_tokens);
   Callable *CALL = nullptr;
   int devicesindex = 0;
-  for (devicesindex = 0;devicesindex< device_manager.size(); devicesindex++)
+  for (devicesindex = 0; devicesindex < device_manager.size(); devicesindex++)
     if (device_manager[devicesindex]->getType() &&
         (stringfind((device_manager[devicesindex])->getName(),
                     todo_tokens[0]))) {
@@ -66,10 +66,10 @@ void automate_task(std::string Ifstate, std::string Todo) {
       break;
     }
 
-  //device_manager[devicesindex]->printDeviceName();
-  // for sensor chosing
+  // device_manager[devicesindex]->printDeviceName();
+  //  for sensor chosing
   int sensorindex = 0;
-  for (sensorindex = 0;sensorindex< device_manager.size(); sensorindex++)
+  for (sensorindex = 0; sensorindex < device_manager.size(); sensorindex++)
     if (!(device_manager[sensorindex])->getType() &&
         (device_manager[sensorindex])->useCase() == ifstate_tokens[0]) {
       if (ifstate_tokens[1] == "=") // equal  //chnage callables
@@ -113,10 +113,10 @@ void create_custom_task() {
   std::string todo, ifwhen;
   std::cout << "If: ";
   std::cin.ignore();
-  getline(std::cin,ifwhen );
-  std::cout<<"Then: "<<std::endl;
+  getline(std::cin, ifwhen);
+  std::cout << "Then: " << std::endl;
   std::cin.ignore();
-  getline(std::cin,todo);
+  getline(std::cin, todo);
   std::cout << todo << std::endl;
   automate_task(ifwhen, todo);
 }
@@ -140,9 +140,8 @@ void addsensor() {
   std::cin.ignore();
   getline(std::cin, sensorName);
   std::cout << "enter the purpose of the sensor";
-  //std::cin >> sensorPurpose;
-  std::cin.ignore();
-  getline(std::cin, sensorPurpose);
+  // std::cin >> sensorPurpose;
+  std::cin >> sensorPurpose;
   device_manager.push_back(new Sensor(sensorName, sensorPurpose));
 }
 
@@ -150,13 +149,12 @@ void adddevice() {
   // add new sensor
   std::string deviceName, devicePurpose;
   std::cout << "enter the name of Device: ";
-  //std::cin >> deviceName;
+  // std::cin >> deviceName;
   std::cin.ignore();
-  getline(std::cin,deviceName);
+  getline(std::cin, deviceName);
   std::cout << "enter the purpose of the Device";
-  //std::cin >> devicePurpose;
-  std::cin.ignore();
-  getline(std::cin,devicePurpose);
+  // std::cin >> devicePurpose;
+  std::cin >> devicePurpose;
   device_manager.push_back(new Device(deviceName, devicePurpose));
 }
 
@@ -259,7 +257,8 @@ public:
 
   int retriveData() {
     // push back to vector
-      if (deviceListArray.devicevector_size() == 0) return 0;
+    if (deviceListArray.devicevector_size() == 0)
+      return 0;
     for (int i = 0; i < deviceListArray.devicevector_size(); i++) {
       currentDevice = deviceListArray.mutable_devicevector(i);
       devicetype = currentDevice->devicetype();
@@ -275,28 +274,28 @@ public:
       if (devicetype == 0) {
         {
           int index = 0;
-          if(currentDevice->onequal_size() !=0 ||
-              currentDevice->ongreater_size() !=0||
-              currentDevice->onlesser_size() !=0)
-          while (1) {
-            if (currentDevice->onequal_size() < index) {
-              automate_task(currentDevice->onequal(index).if_(),
-                            currentDevice->onequal(index).do_());
+          if (currentDevice->onequal_size() != 0 ||
+              currentDevice->ongreater_size() != 0 ||
+              currentDevice->onlesser_size() != 0)
+            while (1) {
+              if (currentDevice->onequal_size() < index) {
+                automate_task(currentDevice->onequal(index).if_(),
+                              currentDevice->onequal(index).do_());
+              }
+              if (currentDevice->ongreater_size() < index) {
+                automate_task(currentDevice->ongreater(index).if_(),
+                              currentDevice->ongreater(index).do_());
+              }
+              if (currentDevice->onlesser_size() < index) {
+                automate_task(currentDevice->onlesser(index).if_(),
+                              currentDevice->onlesser(index).do_());
+              }
+              index++;
+              if (currentDevice->onequal_size() >= index &&
+                  currentDevice->ongreater_size() >= index &&
+                  currentDevice->onlesser_size() >= index)
+                break;
             }
-            if (currentDevice->ongreater_size() < index) {
-              automate_task(currentDevice->ongreater(index).if_(),
-                            currentDevice->ongreater(index).do_());
-            }
-            if (currentDevice->onlesser_size() < index) {
-              automate_task(currentDevice->onlesser(index).if_(),
-                            currentDevice->onlesser(index).do_());
-            }
-            index++;
-            if (currentDevice->onequal_size() >= index &&
-                currentDevice->ongreater_size() >= index &&
-                currentDevice->onlesser_size() >= index)
-              break;
-          }
         }
       }
     }
@@ -322,5 +321,8 @@ public:
     }
   }
 
-  ~Builder() { backupData(); writeData(); }
+  ~Builder() {
+    backupData();
+    writeData();
+  }
 };
