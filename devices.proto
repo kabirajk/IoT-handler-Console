@@ -1,0 +1,25 @@
+syntax ="proto3";
+
+package Devices;
+
+message IfDo{
+	optional string if=1;
+	optional string do=2;
+}
+
+message Device{
+	optional string deviceName=1;
+	optional string deviceCategory=2;
+	optional int32 deviceType=3;
+	optional int32 deviceState=4;
+	optional int32 deviceConnectionState= 5;
+	optional int32 deviceBattery=6;
+	optional float deviceValue=7;
+	repeated IfDo onEqual=8;
+	repeated IfDo onGreater=9;
+	repeated IfDo onLesser=10;
+}
+
+message DeviceList{
+	repeated Device deviceVector=1;
+}
