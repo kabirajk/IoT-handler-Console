@@ -112,10 +112,10 @@ void print_sensor_status() {
 void create_custom_task() {
   std::string todo, ifwhen;
   std::cout << "If: ";
- // std::cin.ignore();
+  std::cin.ignore();
   getline(std::cin,ifwhen );
- std::cout<< ifwhen<< "Then: "<<std::endl;
-  //std::cin.ignore();
+  std::cout<<"Then: "<<std::endl;
+  std::cin.ignore();
   getline(std::cin,todo);
   std::cout << todo << std::endl;
   automate_task(ifwhen, todo);
